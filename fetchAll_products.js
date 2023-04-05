@@ -11,31 +11,26 @@ function fetchAllProducts() {
             console.log(products); 
             products.forEach(product => {
                 const productDiv = document.createElement('div');
-                productDiv.classList.add('product');
-                productDiv.classList.add('col-sm-3');
-                productDiv.classList.add('pt-10');
-                productDiv.classList.add('my-10');
-                productDiv.classList.add('h-40vh');
-                productDiv.classList.add('border');
+                const cardBodyDiv = document.createElement('div');
+                gridContainer.appendChild(productDiv);
 
-                const imageDiv = document.createElement('div');
+                productDiv.classList.add('product', 'col-sm-3', 'pt-20', 'my-10', 'h-40vh', 'card');
+                //lägg till , 'border'
+
                 const productImage = document.createElement('img');
-                productImage.classList.add('img-fluid');
-                productImage.classList.add('mx-auto');
-                productImage.classList.add('d-block');
+                productImage.classList.add('img-fluid', 'mx-auto', 'd-block', 'card-img-top');
                 productImage.src = product.image;
-                productImage.setAttribute('style', 'max-width: 200px; max-height: 200px;')
-                imageDiv.appendChild(productImage);
-                productDiv.appendChild(imageDiv);
+                productImage.setAttribute('style', 'max-width: 200px; max-height: 250px;')
+                productDiv.appendChild(productImage);
+                productDiv.appendChild(cardBodyDiv);
 
                 const productName = document.createElement('h5');
                 productName.textContent = product.title;
-                productDiv.appendChild(productName);
+                cardBodyDiv.appendChild(productName);
 
                 const productPrice = document.createElement('p');
                 productPrice.textContent = `$${product.price}`;
-                productDiv.appendChild(productPrice);
-                gridContainer.appendChild(productDiv);
+                cardBodyDiv.appendChild(productPrice);
 
                 const item = {
                     id: product.id, 
@@ -54,8 +49,7 @@ function fetchAllProducts() {
                 productButton.textContent = "Add to cart";
                 //productButton.classList.add('buy-button');
                 productButton.setAttribute('type', 'button');
-                productButton.classList.add('btn');
-                productButton.classList.add('btn-outline-dark');
+                productButton.classList.add('btn', 'btn-outline-dark');
                
                 productButton.onclick = function () {
                     order(item)
