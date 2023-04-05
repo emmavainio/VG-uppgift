@@ -74,8 +74,6 @@ function fetchProducts(category) {
         });
 }
 
-//Vad som händer när man trycker på add to cart-knappen
-
 async function addToCart(id) {
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -115,24 +113,40 @@ function fetchCartItems() {
 
     cart.forEach(product => {
         container.innerHTML += `<div class="d-flex p-3 row">  
-        <div class="col-3">
-            <img class="img-fluid mx-auto d-block" src="${product.image}" style="max-width: 100px; max-height: 150px;">
-        </div>
-        <div class="col-6">
-            <h5 class="card-title">${product.title}</h5>
-            <p class="card-text">$${product.price}</p>
-        </div>
-        <div class="col-3">
-            <form>
-                <div class="input-group">
-                    <button class="btn btn-outline-secondary" type="button" id="minus-btn">-</button>
-                    <input type="text" class="form-control" placeholder="${product.quantity}" aria-label="quantity" aria-describedby="basic-addon1" id="quantity-input">
-                    <button class="btn btn-outline-secondary" type="button" id="plus-btn">+</button>
-                </div>
-                <button class="btn btn-danger mt-2 btn-sm" type="button" id="remove-btn">Remove</button>
-            </form>
-        </div>
-    </div>`
+                                    <div class="col-3">
+                                        <img class="img-fluid mx-auto d-block" src="${product.image}" style="max-width: 100px; max-height: 150px;">
+                                    </div>
+                                    <div class="col-6">
+                                        <h5 class="card-title">${product.title}</h5>
+                                        <p class="card-text">$${product.price.toFixed(2)}</p>
+                                    </div>
+                                    <div class="col-3">
+                                        <form>
+                                            <div class="input-group">
+                                                <button class="btn btn-outline-secondary" type="button" id="minus-btn-${product.id}">-</button>
+                                                <input type="text" class="form-control" placeholder="${product.quantity}" aria-label="quantity" aria-describedby="basic-addon1" id="quantity-input-${product.id}">
+                                                <button class="btn btn-outline-secondary" type="button" id="plus-btn-${product.id}">+</button>
+                                            </div>
+                                            <p>Total: $${(product.price * product.quantity).toFixed(2)}</p>
+                                            <button class="btn btn-danger mt-2 btn-sm" type="button" id="remove-btn">Remove</button>
+                                        </form>
+                                    </div>
+                                </div>`;
+                                
+        const quantityInput = document.getElementById(`quantity-input-${product.id}`);
+        const minusBtn = document.getElementById(`minus-btn-${product.id}`);
+        const plusBtn = document.getElementById(`plus-btn-${product.id}`);
+        
+        minusBtn.addEventListener('click', () => {
+            if (quantityInput.value > 1) {
+                quantityInput.value--;
+            }
+        });
+        
+        plusBtn.addEventListener('click', () => {
+            quantityInput.value++;
+        });
+
     })
 
     //uppdatera totalen för cart
