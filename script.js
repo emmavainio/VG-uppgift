@@ -111,7 +111,7 @@ function fetchCartItems() {
     const container = document.getElementById('modal-cart');
     container.innerHTML = '';
 
-    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+    let cart = JSON.parse(localStorage.getItem("cart"));
 
     cart.forEach(product => {
         container.innerHTML += `<div class="d-flex p-3 row">  
@@ -145,6 +145,7 @@ function fetchCartItems() {
 function removeCart() {
     localStorage.removeItem("cart");
     const container = document.getElementById('modal-cart');
-    container.innerHTML = '';
+    container.innerHTML = '<p>Your shopping cart is empty!</p>';
+    document.getElementById('total-amount').textContent = '';
 }
 
