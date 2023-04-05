@@ -115,36 +115,36 @@ function fetchCartItems() {
 
     cart.forEach(product => {
         container.innerHTML += `<div class="d-flex p-3 row">  
-                                    <div class="col-3">
-                                        <img class="img-fluid mx-auto d-block" src="${product.image}" style="max-width: 100px; max-height: 150px;">
-                                    </div>
-                                    <div class="col-9">
-                                        <h5 class="card-title">${product.title}</h5>
-                                        <p class="card-text">$${product.price}</p>
-                                    </div>
-                                </div>`
+        <div class="col-3">
+            <img class="img-fluid mx-auto d-block" src="${product.image}" style="max-width: 100px; max-height: 150px;">
+        </div>
+        <div class="col-6">
+            <h5 class="card-title">${product.title}</h5>
+            <p class="card-text">$${product.price}</p>
+        </div>
+        <div class="col-3">
+            <form>
+                <div class="input-group">
+                    <button class="btn btn-outline-secondary" type="button" id="minus-btn">-</button>
+                    <input type="text" class="form-control" placeholder="${product.quantity}" aria-label="quantity" aria-describedby="basic-addon1" id="quantity-input">
+                    <button class="btn btn-outline-secondary" type="button" id="plus-btn">+</button>
+                </div>
+                <button class="btn btn-danger mt-2 btn-sm" type="button" id="remove-btn">Remove</button>
+            </form>
+        </div>
+    </div>`
     })
 
+    //uppdatera totalen för cart
+    const totalAmountP = document.getElementById('total-amount');
+    let totalAmount = 0;
+    cart.forEach(product => { totalAmount += (product.price * product.quantity) });
+    totalAmountP.textContent = `Total amount: $${totalAmount.toFixed(2)}`;
 }
 
-function getItem(){
-    let item = JSON.parse(localStorage.getItem('item'));
-
-    const orderContainer = document.querySelector('.order-container');
-    
-    let itemTitle = document.createElement('h2');
-    itemTitle.textContent = item.title;
-    orderContainer.appendChild(itemTitle);
-
-    let itemImage = document.createElement('img');
-    itemImage.src = item.image;
-    orderContainer.appendChild(itemImage);
-
-    let itemDescription = document.createElement('p');
-    itemDescription.textContent = item.description;
-    orderContainer.appendChild(itemDescription);
-
-    let itemPrice = document.createElement('p');
-    itemPrice.textContent = `$${item.price}`
-    orderContainer.appendChild(itemPrice);
+function removeCart() {
+    localStorage.removeItem("cart");
+    const container = document.getElementById('modal-cart');
+    container.innerHTML = '';
 }
+
