@@ -26,7 +26,7 @@ function fetchAllProducts() {
                                                 <img class="img-fluid mx-auto d-block card-img-top" src="${item.image}" style="max-width: 200px; max-height: 250px;">
                                                     <div class="card-body">  
                                                         <h5 class="card-title">${item.title}</h5>
-                                                        <p class="card-text">$${item.price}</p>
+                                                        <p class="card-text">$${item.price.toFixed(2)}</p>
                                                         <button type="button" id="${item.id}" class="btn btn-outline-dark" onclick="addToCart(${item.id})">Add to cart</button>
                                                     </div>
                                             </div>`   
@@ -63,7 +63,7 @@ function fetchProducts(category) {
                                                 <img class="img-fluid mx-auto d-block card-img-top" src="${item.image}" style="max-width: 200px; max-height: 250px;">
                                                     <div class="card-body">  
                                                         <h5 class="card-title">${item.title}</h5>
-                                                        <p class="card-text">$${item.price}</p>
+                                                        <p class="card-text">$${item.price.toFixed(2)}</p>
                                                         <button type="button" id="${item.id}" class="btn btn-outline-dark" onclick="addToCart(${item.id})">Add to cart</button>
                                                     </div>
                                             </div>`
@@ -94,14 +94,12 @@ async function addToCart(id) {
                     image: product.image,
                     quantity: 1
                 };
-                console.log(item);
                 cart.push(item);
         })
         .catch(error => {
             console.error(`Error fetching products for ${category}: ${error}`);
         });
     }
-    //lägger till carten i ls igen
     localStorage.setItem("cart", JSON.stringify(cart));
 }
 
@@ -111,24 +109,31 @@ function fetchCartItems() {
 
     let cart = JSON.parse(localStorage.getItem("cart"));
 
+    if (cart.length === 0) {
+        const container = document.getElementById('modal-cart');
+        container.innerHTML = '<p>Your shopping cart is empty!</p>';
+        document.getElementById('total-amount').textContent = '';
+    }
+
     cart.forEach(product => {
         container.innerHTML += `<div class="d-flex p-3 row">  
                                     <div class="col-3">
                                         <img class="img-fluid mx-auto d-block" src="${product.image}" style="max-width: 100px; max-height: 150px;">
                                     </div>
                                     <div class="col-6">
-                                        <h5 class="card-title">${product.title}</h5>
-                                        <p class="card-text">$${product.price.toFixed(2)}</p>
+                                        <h5>${product.title}</h5>
+                                        <p>$${product.price.toFixed(2)}</p>
                                     </div>
-                                    <div class="col-3">
+                                    <div class="col-1"></div>
+                                    <div class="col-2">
                                         <form>
                                             <div class="input-group">
                                                 <button class="btn btn-outline-secondary" type="button" id="minus-btn-${product.id}">-</button>
-                                                <input type="text" class="form-control" placeholder="${product.quantity}" aria-label="quantity" aria-describedby="basic-addon1" id="quantity-input-${product.id}">
+                                                <input type="text" class="form-control" placeholder="${product.quantity}" aria-label="quantity" aria-describedby="basic-addon1" id="quantity-input-${product.id} readonly">
                                                 <button class="btn btn-outline-secondary" type="button" id="plus-btn-${product.id}">+</button>
                                             </div>
                                             <p>Total: $${(product.price * product.quantity).toFixed(2)}</p>
-                                            <button class="btn btn-danger mt-2 btn-sm" type="button" id="remove-btn">Remove</button>
+                                            <button class="btn btn-danger mt-2 btn-sm" type="button" id="remove-btn-${product.id}" onclick="removeProduct(${product.id})">Remove</button>
                                         </form>
                                     </div>
                                 </div>`;
@@ -137,15 +142,7 @@ function fetchCartItems() {
         const minusBtn = document.getElementById(`minus-btn-${product.id}`);
         const plusBtn = document.getElementById(`plus-btn-${product.id}`);
         
-        minusBtn.addEventListener('click', () => {
-            if (quantityInput.value > 1) {
-                quantityInput.value--;
-            }
-        });
         
-        plusBtn.addEventListener('click', () => {
-            quantityInput.value++;
-        });
 
     })
 
@@ -156,10 +153,23 @@ function fetchCartItems() {
     totalAmountP.textContent = `Total amount: $${totalAmount.toFixed(2)}`;
 }
 
+function changeProductAmount(amount, id) {
+    console.log(amount);
+}
+
+function removeProduct(id) {
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    let index = cart.findIndex(product => product.id === id);
+    cart.splice(index, 1);
+    localStorage.setItem("cart", JSON.stringify(cart));
+
+    fetchCartItems();
+}
+
 function removeCart() {
     localStorage.removeItem("cart");
     const container = document.getElementById('modal-cart');
     container.innerHTML = '<p>Your shopping cart is empty!</p>';
-    document.getElementById('total-amount').textContent = '';
+    document.getElementById('total-amount').textContent = 'Total amount: $0.00';
 }
 
