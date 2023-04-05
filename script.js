@@ -128,21 +128,15 @@ function fetchCartItems() {
                                     <div class="col-2">
                                         <form>
                                             <div class="input-group">
-                                                <button class="btn btn-outline-secondary" type="button" id="minus-btn-${product.id}">-</button>
+                                                <button class="btn btn-outline-secondary" type="button" onclick="changeProductAmount(-1, ${product.id})">-</button>
                                                 <input type="text" class="form-control" placeholder="${product.quantity}" aria-label="quantity" aria-describedby="basic-addon1" id="quantity-input-${product.id} readonly">
-                                                <button class="btn btn-outline-secondary" type="button" id="plus-btn-${product.id}">+</button>
+                                                <button class="btn btn-outline-secondary" type="button" onclick="changeProductAmount(1, ${product.id})">+</button>
                                             </div>
                                             <p>Total: $${(product.price * product.quantity).toFixed(2)}</p>
-                                            <button class="btn btn-danger mt-2 btn-sm" type="button" id="remove-btn-${product.id}" onclick="removeProduct(${product.id})">Remove</button>
+                                            <button class="btn btn-danger mt-2 btn-sm" type="button" onclick="removeProduct(${product.id})">Remove</button>
                                         </form>
                                     </div>
                                 </div>`;
-                                
-        const quantityInput = document.getElementById(`quantity-input-${product.id}`);
-        const minusBtn = document.getElementById(`minus-btn-${product.id}`);
-        const plusBtn = document.getElementById(`plus-btn-${product.id}`);
-        
-        
 
     })
 
@@ -154,7 +148,16 @@ function fetchCartItems() {
 }
 
 function changeProductAmount(amount, id) {
-    console.log(amount);
+    let cart = JSON.parse(localStorage.getItem("cart"));
+    let index = cart.findIndex(product => product.id === id);
+    cart[index].quantity += amount;
+
+    if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    fetchCartItems();
 }
 
 function removeProduct(id) {
