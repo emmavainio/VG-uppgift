@@ -76,7 +76,7 @@ function fetchProducts(category) {
 
 //Vad som händer när man trycker på add to cart-knappen
 
-function addToCart(id) {
+async function addToCart(id) {
 
     let cart = JSON.parse(localStorage.getItem("cart")) || [];
     
@@ -84,10 +84,47 @@ function addToCart(id) {
     if(index >= 0) {
         cart[index].quantity++;
     } else {
-        cart.push({ id: id, quantity: 1 });
+        await fetch(`https://fakestoreapi.com/products/${id}`)
+            .then(res => res.json())
+            .then(product => {
+                const item = {
+                    id: product.id, 
+                    title: product.title, 
+                    price: product.price,
+                    description: product.description, 
+                    category: product.category, 
+                    image: product.image,
+                    quantity: 1
+                };
+                console.log(item);
+                cart.push(item);
+        })
+        .catch(error => {
+            console.error(`Error fetching products for ${category}: ${error}`);
+        });
     }
-    
+    //lägger till carten i ls igen
     localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function fetchCartItems() {
+    const container = document.getElementById('modal-cart');
+    container.innerHTML = '';
+
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+    cart.forEach(product => {
+        container.innerHTML += `<div class="d-flex p-3 row">  
+                                    <div class="col-3">
+                                        <img class="img-fluid mx-auto d-block" src="${product.image}" style="max-width: 100px; max-height: 150px;">
+                                    </div>
+                                    <div class="col-9">
+                                        <h5 class="card-title">${product.title}</h5>
+                                        <p class="card-text">$${product.price}</p>
+                                    </div>
+                                </div>`
+    })
+
 }
 
 function getItem(){
