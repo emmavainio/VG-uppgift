@@ -1,3 +1,9 @@
+//Ladda alla produkter
+
+document.addEventListener('DOMContentLoaded', function () {
+    fetchAllProducts();
+});
+
 function fetchAllProducts() {
     console.log("inside function");
     const gridContainer = document.querySelector('.grid-container');
@@ -10,11 +16,22 @@ function fetchAllProducts() {
         .then(products => {
             console.log(products); 
             products.forEach(product => {
+
+                const item = {
+                    id: product.id, 
+                    title: product.title, 
+                    price: product.price,
+                    description: product.description, 
+                    category: product.category, 
+                    image: product.image
+                };
+
                 const productDiv = document.createElement('div');
                 const cardBodyDiv = document.createElement('div');
                 gridContainer.appendChild(productDiv);
 
                 productDiv.classList.add('product', 'col-sm-3', 'pt-20', 'my-10', 'h-40vh', 'card');
+                //cardBodyDiv.classList.add('position-absolute', 'bottom-10px', 'left-50%');
                 //lägg till , 'border'
 
                 const productImage = document.createElement('img');
@@ -31,19 +48,10 @@ function fetchAllProducts() {
                 const productPrice = document.createElement('p');
                 productPrice.textContent = `$${product.price}`;
                 cardBodyDiv.appendChild(productPrice);
-
-                const item = {
-                    id: product.id, 
-                    title: product.title, 
-                    price: product.price,
-                    description: product.description, 
-                    category: product.category, 
-                    image: product.image
-                };
                 
                 const productA = document.createElement('a');
-                productA.setAttribute('href', 'order.html');
-                productDiv.appendChild(productA);
+                productA.setAttribute('href', 'index.html'); //ändra denna till något rimligt
+                cardBodyDiv.appendChild(productA);
 
                 const productButton = document.createElement('button')
                 productButton.textContent = "Add to cart";
@@ -62,7 +70,5 @@ function fetchAllProducts() {
         });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-    const productsButton = document.querySelector('#products-button');
-    productsButton.addEventListener('click', fetchAllProducts);
-});
+
+// Ladda prod per kategori
